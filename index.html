@@ -1,0 +1,248 @@
+<html>
+<head>
+	<title>Reflexion</title>
+
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	
+	<style>
+	body {
+		margin: 10px;
+	}
+
+	th, td {
+		border: 1px solid black;
+		padding: 10px;
+	}
+
+	table {
+		border: 2px solid black;
+	}
+	
+	.footer {
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		text-align: center;
+		border: 1px solid black;
+	}
+	</style>
+</head>
+
+<body>
+<table>
+<tr><th>Activate poll</th><th>Link</th><th>Copy link to clipboard</th><th>Poll id</th><th>Votes</th><th>Count</th><th>Average (2 decimals)</th><th>Reset</th></tr>
+<tr><td><button id="activateBtn01">Ziel erreicht</button></td><td><a id="link01" target="_blank"></a></td><td><button id="copyBtn01" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td><td><div id="poll01"></div></td><td><div id="votes01"></div></td><td><div id="count01"></div></td><td><div id="avg01"></div></td><td><button id="resetBtn01" disabled="true">Reset</button></tr>
+<tr><td><button id="activateBtn02">Lautstärke & Konzentration</button></td><td><a id="link02" target="_blank"></a></td><td><button id="copyBtn02" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td><td><div id="poll02"></div></td><td><div id="votes02"></div></td><td><div id="count02"></div></td><td><div id="avg02"></div></td><td><button id="resetBtn02" disabled="true">Reset</button></tr>
+<tr><td><button id="activateBtn03">Stimmung</button></td><td><a id="link03" target="_blank"></a></td><td><button id="copyBtn03" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td><td><div id="poll03"></div></td><td><div id="votes03"></div></td><td><div id="count03"></div></td><td><div id="avg03"></div></td><td><button id="resetBtn03" disabled="true">Reset</button></tr>
+<tr><td><button id="activateBtn04">Programm</button></td><td><a id="link04" target="_blank"></a></td><td><button id="copyBtn04" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td><td><div id="poll04"></div></td><td><div id="votes04"></div></td><td><div id="count04"></div></td><td><div id="avg04"></div></td><td><button id="resetBtn04" disabled="true">Reset</button></tr>
+</table>
+
+<script>
+var apiUrl = "https://cors-proxy.brandlmayer.workers.dev/?https://strawpoll.com/api/poll";
+
+var preBody = '{"poll":{"answer_count":4,"title":"';
+var postBody = '","description":"","answers":["1","2","3","4","5"],"priv":true,"ma":false,"mip":true,"co":0,"vpn":1,"enter_name":0,"has_deadline":0,"deadline":null,"only_reg":0,"has_image":0,"image":null,"show_results":1}}';
+
+addActivateClickHandler("01");
+addActivateClickHandler("02");
+addActivateClickHandler("03");
+addActivateClickHandler("04");
+
+addResetClickHandler("01");
+addResetClickHandler("02");
+addResetClickHandler("03");
+addResetClickHandler("04");
+
+loadLocalStorage();
+
+startUpdateFieldsLoop();
+
+/**
+ *	Adds a click handler to a specific element
+ *	On click:
+ *		Disables the activate button
+ *		Executes a post function to create a poll
+ *		On success:
+ *			Sets a localStorage item with the returned id
+ *			Sets the necessary elements to active
+ *		On failure:
+ *			Reenables the activate button again
+ *			Shows toast message with the error received
+ */
+function addActivateClickHandler(id) {
+	var data = preBody + $("#activateBtn" + id).text() + postBody;
+
+	$("#activateBtn" + id).click(function(){
+		$("#link" + id).text("loading...");
+		$("#activateBtn" + id).attr('disabled', true);
+		$.post(apiUrl, data)
+		.done(function(returnValue) {
+			localStorage.setItem("poll" + id, returnValue.content_id);
+			setActive(id, returnValue.content_id);
+		})
+		.fail(function(returnValue) {
+			toastr.error("Request failed due to: " + returnValue.statusText + " (" + returnValue.status + ")");
+			$("#activateBtn" + id).attr('disabled', false);
+			$("#link" + id).text("");
+		});
+	});
+}
+
+/**
+ *	Fills the fields with links and text
+ *	Adds a click handler to be able to copy the link into the clipboard
+ *	Enables the reset button
+ */
+function setActive(id, pollId) {
+	$("#poll" + id).text(pollId);
+	$("#link" + id).text("Click");
+	var pollUrl = "https://strawpoll.com/" + pollId;
+	$("#link" + id).attr("href", pollUrl);
+	$("#votes" + id).text("loading...");
+	updateField(id);
+	
+	$("#copyBtn" + id).click(function() {
+		var textArea = document.createElement("textarea");
+		textArea.style.position = 'fixed';
+		textArea.style.top = 0;
+		textArea.style.left = 0;
+		textArea.style.width = '2em';
+		textArea.style.height = '2em';
+		textArea.style.padding = 0;
+		textArea.style.border = 'none';
+		textArea.style.outline = 'none';
+		textArea.style.boxShadow = 'none';
+		textArea.style.background = 'transparent';
+		textArea.value = pollUrl;
+		document.body.appendChild(textArea);
+		textArea.focus();
+		textArea.select();
+		document.execCommand('copy');
+		document.body.removeChild(textArea);
+		
+		$('#copyBtn' + id).popover('dispose').popover({
+			trigger: 'manual',
+			content: "Copied: " + pollUrl});
+		$('#copyBtn' + id).mouseleave(function() {
+			$('#copyBtn' + id).popover('hide');
+		});
+		$('#copyBtn' + id).popover('show');
+	});
+	$("#copyBtn" + id).attr('disabled', false);
+	
+	$("#resetBtn" + id).attr('disabled', false);
+}
+
+/**
+ *	On click:
+ *		Removes all text and links from elements
+ *		Enables activate button and disables reset button
+ */
+function addResetClickHandler(id) {
+	$("#resetBtn" + id).click(function(){
+		$("#poll" + id).text("");
+		localStorage.removeItem("poll" + id);
+		$("#link" + id).text("");
+		$("#link" + id).removeAttr("href");
+		$("#votes" + id).text("");
+		$("#count" + id).text("");
+		$("#avg" + id).text("");
+		
+		$("#activateBtn" + id).attr('disabled', false);
+		$("#copyBtn" + id).attr('disabled', true);
+		$("#resetBtn" + id).attr('disabled', true);
+	});
+}
+
+/**
+ *	Enter if-stub only when pollId is set
+ *	Executes get request to resource and fetches poll results
+ *	On success:
+ *		Calculates count and average and sets corresponding text fields
+ *	On failure:
+ *		Shows toast message with error received
+ */
+function updateField(id){
+	if($("#poll" + id).text() && $("#poll" + id).text().length != 0) {
+		$.get(apiUrl + "/" + $("#poll" + id).text())
+		.done(function(returnValue) {
+			var votes = "";
+			var sum = 0;
+			var count = 0;
+			
+			returnValue.content.poll.poll_answers.forEach(function(item, index) {
+				votes += item.answer + ":" + item.votes + ", ";
+				sum += parseInt(item.answer, 10) * parseInt(item.votes, 10);
+				count += parseInt(item.votes, 10);
+			});
+			var avg = count != 0 ? sum/count : count;
+			votes = votes.slice(0, -2);
+			
+			$("#votes" + id).text(votes);
+			$("#avg" + id).text(avg.round(2));
+			$("#count" + id).text(count);
+		})
+		.fail(function(returnValue) {
+			toastr.error("Request failed due to: " + returnValue.statusText + " (" + returnValue.status + ")");
+		});
+	}
+}
+
+/**
+ *	Loops the get request update every 5 seconds
+ */
+function startUpdateFieldsLoop(){
+	updateField("01");
+	updateField("02");
+	updateField("03");
+	updateField("04");
+
+    setTimeout(startUpdateFieldsLoop, 5000);
+}
+
+/**
+ *	Loads local storage items for persistence if the browser was closed
+ */
+function loadLocalStorage() {
+	loadLocalStorageItem("01");
+	loadLocalStorageItem("02");
+	loadLocalStorageItem("03");
+	loadLocalStorageItem("04");
+}
+
+/**
+ *	Sets fields to active if local storage item exists
+ */
+function loadLocalStorageItem(id) {
+	var pollId = localStorage.getItem("poll" + id);
+	
+	if(pollId != null) {
+		$("#link" + id).text("loading...");
+		$("#activateBtn" + id).attr('disabled', true);
+		
+		setActive(id, pollId);
+	}
+}
+
+/**
+ *	Adds round function to number variables
+ */
+Number.prototype.round = function(places) {
+  return +(Math.round(this + "e+" + places)  + "e-" + places);
+}
+</script>
+
+<div class="footer">
+  <p>&copy; by Fabian Brandlmayer</p>
+</div>
+
+</body>
+</html>
+
