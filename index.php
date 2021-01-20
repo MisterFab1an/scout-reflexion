@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Reflexion v2</title>
+	<title>Reflexion v3</title>
 
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -10,6 +10,9 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 	
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.23/datatables.min.css"/>
+	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.23/datatables.min.js"></script>
+	
 	<style>
 	.footer {
 		background-color: #f5f5f5;
@@ -17,6 +20,10 @@
 	
 	.comments-wrapper {
 		padding: 10px
+	}
+	
+	#reflexion-table-wrapper {
+		padding: 20px
 	}
 	</style>
 </head>
@@ -88,25 +95,72 @@
 </table>
 </div>
 
-<div class="comments-wrapper input-group">
+<div class="comments-wrapper input-group col-12">
   <div class="input-group-prepend">
     <span class="input-group-text">Comments</span>
   </div>
-  <textarea class="form-control" placeholder="this is a quickly added temporary text field just for Alena <3"></textarea>
+  <textarea id="comments" class="form-control col-md-9" placeholder="notes, annotations, wishes, goals and other pretty things"></textarea>
+  
+  <button id="save-entry" type="button" class="btn btn-primary col-md-1" disabled="true">Save</button>
+  <button id="reset-all" type="button" class="btn btn-primary col-md-1">Reset all</button>
 </div>
 
+<br/>
+
+<div id="reflexion-table-wrapper">
+	<table id="reflexion-table" class="table table-striped table-hover table-bordered" style="width:100%">
+		<colgroup>
+		   <col span="1" style="width: 10%;">
+		   <col span="1" style="width: 10%;">
+		   <col span="1" style="width: 10%;">
+		   <col span="1" style="width: 10%;">
+		   <col span="1" style="width: 10%;">
+		   <col span="1" style="width: 10%;">
+		   <col span="1" style="width: 40%;">
+		</colgroup>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Datum</th>
+                <th>Ziel erreicht</th>
+                <th>Lautstärke & Konzentration</th>
+                <th>Stimmug</th>
+                <th>Programm</th>
+                <th>Durchschnitt</th>
+                <th>Kommentare</th>
+            </tr>
+        </thead>
+	</table>
+</div>
+
+
+<div id="footer-placeholder" class="py-5"></div>
+
 <footer class="footer fixed-bottom"> 
-	<div class="text-center py-3">
+	<div class="text-center py-2">
 		<div>
 			Verbesserungen, Anregungen, Bugs und Wünsche direkt an mich via <a href="https://discordapp.com/users/137229435030994944" target="_blank">Discord</a>
 		<div>
 		<div>
-			Reflexion v2 &copy; 2021 Copyright: <a href="mailto:f.brandlmayer@gmail.com">Fabian Brandlmayer</a>
+			Reflexion v3 &copy; 2021 Copyright: <a href="mailto:f.brandlmayer@gmail.com">Fabian Brandlmayer</a>
 		</div>
 	</div>
 </footer>
 
 <script>
+$(document).ready(function() {
+    $('#reflexion-table').DataTable({
+		"order": [[ 1, "desc" ]],
+        "processing": true,
+        "serverSide": true,
+        "ajax": "fetch-data.php",
+		"columnDefs": [
+			{ targets: [0], visible: false },
+			{ targets: [7], orderable: false }
+		]
+	});
+});
+
 var apiUrl = "https://cors-proxy.brandlmayer.workers.dev/?https://strawpoll.com/api/poll";
 
 var preBody = '{"poll":{"answer_count":4,"title":"';
@@ -122,9 +176,56 @@ addResetClickHandler("02");
 addResetClickHandler("03");
 addResetClickHandler("04");
 
+addRemainingClickHandler();
+
 loadLocalStorage();
 
 startUpdateFieldsLoop();
+
+function addRemainingClickHandler() {
+	$('#save-entry').click(function(){
+        var goal_reached = parseFloat($('#avg01').text() || 0);
+        var volume_and_concentration = parseFloat($('#avg02').text() || 0);
+        var mood = parseFloat($('#avg03').text() || 0);
+        var program = parseFloat($('#avg04').text() || 0);
+		var avg = ((goal_reached + volume_and_concentration + mood + program) / 4).round(2);
+		
+        data =  {'goal_reached': goal_reached,
+				'volume_and_concentration': volume_and_concentration,
+				'mood': mood,
+				'program': program,
+				'average': avg,
+				'comments': $('#comments').val()};
+				
+		console.log(data);
+				
+        $.post('insert-data.php', data, function (response) {
+			$('#reflexion-table').DataTable().ajax.reload();
+        });
+    });
+	
+	$('#reset-all').click(function() {
+		resetPoll("01");
+		resetPoll("02");
+		resetPoll("03");
+		resetPoll("04");
+		$('#comments').val("");
+		
+		updateSaveButton();
+	});
+}
+
+function updateSaveButton() {
+	if(!$("#resetBtn01").is(':disabled') &&
+		!$("#resetBtn02").is(':disabled') &&
+		!$("#resetBtn03").is(':disabled') &&
+		!$("#resetBtn04").is(':disabled')) {
+		$('#save-entry').attr('disabled', false);
+	}
+	else {
+		$('#save-entry').attr('disabled', true);
+	}
+}
 
 /**
  *	Adds a click handler to a specific element
@@ -202,6 +303,8 @@ function setActive(id, pollId) {
 	$("#copyBtn" + id).attr('disabled', false);
 	
 	$("#resetBtn" + id).attr('disabled', false);
+	
+	updateSaveButton();
 }
 
 /**
@@ -316,5 +419,6 @@ Number.prototype.round = function(places) {
   return +(Math.round(this + "e+" + places)  + "e-" + places);
 }
 </script>
+
 </body>
 </html>
