@@ -41,8 +41,7 @@ $columns = array(
     array( 'db' => 'volume_and_concentration',   'dt' => 3 ),
     array( 'db' => 'mood',     'dt' => 4 ),
     array( 'db' => 'program',     'dt' => 5 ),
-    array( 'db' => 'average',     'dt' => 6 ),
-    array( 'db' => 'comments',     'dt' => 7 )
+    array( 'db' => 'comments',     'dt' => 6 )
 );
  
 // SQL server connection information

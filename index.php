@@ -154,6 +154,22 @@ $(document).ready(function() {
         "processing": true,
         "serverSide": true,
         "ajax": "fetch-data.php",
+		"columns": [
+            { "data": 0 },
+            { "data": 1 },
+            { "data": 2 },
+            { "data": 3 },
+            { "data": 4 },
+            { "data": 5 },
+            { "data": null,
+				"render": function ( data, type, row, meta ) {
+					return (((parseFloat(row[2]) + 
+								parseFloat(row[3]) + 
+								parseFloat(row[4]) + 
+								parseFloat(row[5])) || 0) 
+								/ 4).round(2);
+			}},
+            { "data": 6 }],
 		"columnDefs": [
 			{ targets: [0], visible: false },
 			{ targets: [7], orderable: false }
