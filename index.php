@@ -330,6 +330,7 @@ function setActive(id, pollId) {
 function addResetClickHandler(id) {
 	$("#resetBtn" + id).click(function(){
 		resetPoll(id);
+		updateSaveButton();
 	});
 }
 
