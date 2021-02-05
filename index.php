@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Reflexion v3</title>
+	<title>Reflexion v3.2</title>
 
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -142,7 +142,7 @@
 			Verbesserungen, Anregungen, Bugs und Wünsche direkt an mich via <a href="https://discordapp.com/users/137229435030994944" target="_blank">Discord</a>
 		<div>
 		<div>
-			Reflexion v3 &copy; 2021 Copyright: <a href="mailto:f.brandlmayer@gmail.com">Fabian Brandlmayer</a>
+			Reflexion v3.2 &copy; 2021 Copyright: <a href="mailto:f.brandlmayer@gmail.com">Fabian Brandlmayer</a>
 		</div>
 	</div>
 </footer>
