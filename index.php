@@ -1,6 +1,16 @@
 <html>
 <head>
-	<title>Reflexion v3.2</title>
+	<title>Reflexion</title>
+	
+	<link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+	<link rel="manifest" href="favicon/site.webmanifest">
+	<link rel="mask-icon" href="favicon/safari-pinned-tab.svg" color="#5bbad5">
+	<link rel="shortcut icon" href="favicon/favicon.ico">
+	<meta name="msapplication-TileColor" content="#603cba">
+	<meta name="msapplication-config" content="favicon/browserconfig.xml">
+	<meta name="theme-color" content="#ffffff">
 
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -133,16 +143,18 @@
 	</table>
 </div>
 
+<div id="footer-placeholder" class="py-2"></div>
 
-<div id="footer-placeholder" class="py-5"></div>
-
-<footer class="footer fixed-bottom"> 
+<footer class="footer"> 
 	<div class="text-center py-2">
 		<div>
 			Verbesserungen, Anregungen, Bugs und Wünsche direkt an mich via <a href="https://discordapp.com/users/137229435030994944" target="_blank">Discord</a>
 		<div>
 		<div>
-			Reflexion v3.2 &copy; 2021 Copyright: <a href="mailto:f.brandlmayer@gmail.com">Fabian Brandlmayer</a>
+			<span id="version">Reflexion</span> &copy; 2021 Copyright: <a href="mailto:f.brandlmayer@gmail.com">Fabian Brandlmayer</a>
+		</div>
+		<div>
+			<a href="favicon/favicon_original.png">Favicon</a> &copy; 2021 Copyright: <a href="https://discordapp.com/users/689499726390886452">Matteo Ingegneri</a>
 		</div>
 	</div>
 </footer>
@@ -175,6 +187,11 @@ $(document).ready(function() {
 			{ targets: [7], orderable: false }
 		]
 	});
+	
+	// set version in title and footer
+	var version = "Reflexion v3.3";
+	document.title = version;
+	$('#version').text(version);
 });
 
 var apiUrl = "https://cors-proxy.brandlmayer.workers.dev/?https://strawpoll.com/api/poll";
