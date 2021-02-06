@@ -24,6 +24,14 @@
 	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.23/datatables.min.js"></script>
 	
 	<style>
+	.comments-wrapper {
+		padding: 10px
+	}
+
+	#reflexion-table-wrapper {
+		padding: 20px
+	}
+
 	#page-container {
 		position: relative;
 		min-height: 100vh;
@@ -41,12 +49,10 @@
 		height: 5.5rem;            /* Footer height */
 	}
 	
-	.comments-wrapper {
-		padding: 10px
-	}
-	
-	#reflexion-table-wrapper {
-		padding: 20px
+	@media only screen and (max-width : 1100px){ /* You can edit the max-width value to match what you need */
+	#page-container {
+		position: relative;
+		min-height: calc(var(--vh, 1vh) * 100);	/* Fix mobile viewport height */
 	}
 	</style>
 </head>
@@ -174,6 +180,12 @@
 </div>
 
 <script>
+// for mobile-viewport
+// get the viewport height and multiple it by 1% to get a value for a vh unit
+let vh = window.innerHeight * 0.01;
+// set the value in the --vh custom property to the root of the document
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+
 $(document).ready(function() {
     $('#reflexion-table').DataTable({
 		"order": [[ 1, "desc" ]],
@@ -203,7 +215,7 @@ $(document).ready(function() {
 	});
 	
 	// set version in title and footer
-	var version = "Reflexion v3.3";
+	var version = "Reflexion v3.3.1";
 	document.title = version;
 	$('#version').text(version);
 });
