@@ -24,8 +24,21 @@
 	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.23/datatables.min.js"></script>
 	
 	<style>
-	.footer {
+	#page-container {
+		position: relative;
+		min-height: 100vh;
+	}
+
+	#content-wrap {
+		padding-bottom: 6.5rem;    /* Footer height +1rem */
+	}
+
+	#footer {
 		background-color: #f5f5f5;
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: 5.5rem;            /* Footer height */
 	}
 	
 	.comments-wrapper {
@@ -39,125 +52,126 @@
 </head>
 
 <body>
-
-<div class="table-wrapper">
-<table class="table table-hover">
-<colgroup>
-   <col span="1" style="width: 13%;">
-   <col span="1" style="width: 5%;">
-   <col span="1" style="width: 10%;">
-   <col span="1" style="width: 8%;">
-   <col span="1" style="width: 10%;">
-   <col span="1" style="width: 5%;">
-   <col span="1" style="width: 10%;">
-   <col span="1" style="width: 5%;">
-</colgroup>
-<thead class="thead-dark">
-	<tr>
-		<th>Activate poll</th>
-		<th>Link</th>
-		<th>Copy link to clipboard</th>
-		<th>Poll id</th>
-		<th>Votes</th>
-		<th>Count</th>
-		<th>Average (2 decimals)</th>
-		<th>Reset</th>
-	</tr>
-</thead>
-<tbody>
-	<tr>
-		<td><button type="button" class="btn btn-primary" id="activateBtn01">Ziel erreicht</button></td>
-		<td><a id="link01" class="btn btn-secondary" target="_blank" href="" style="visibility: hidden" disabled="true">loading...</a></td>
-		<td><button type="button" class="btn btn-primary" id="copyBtn01" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td>
-		<td><div id="poll01"></div></td><td>
-		<div id="votes01"></div></td>
-		<td><div id="count01"></div></td>
-		<td vertical-align="middle"><div id="avg01"></div></td>
-		<td><button type="button" class="btn btn-primary" id="resetBtn01" disabled="true">Reset</button>
-	</tr>
-	<tr>
-		<td><button type="button" class="btn btn-primary" id="activateBtn02">Lautstärke & Konzentration</button></td>
-		<td><a id="link02" class="btn btn-secondary" target="_blank" href="" style="visibility: hidden" disabled="true">loading...</a></td>
-		<td><button type="button" class="btn btn-primary" id="copyBtn02" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td>
-		<td><div id="poll02"></div></td>
-		<td><div id="votes02"></div></td>
-		<td><div id="count02"></div></td>
-		<td><div id="avg02"></div></td>
-		<td><button type="button" class="btn btn-primary" id="resetBtn02" disabled="true">Reset</button></tr>
-	<tr>
-		<td><button type="button" class="btn btn-primary" id="activateBtn03">Stimmung</button></td>
-		<td><a id="link03" class="btn btn-secondary" target="_blank" href="" style="visibility: hidden" disabled="true">loading...</a></td>
-		<td><button type="button" class="btn btn-primary" id="copyBtn03" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td>
-		<td><div id="poll03"></div></td><td><div id="votes03"></div></td>
-		<td><div id="count03"></div></td>
-		<td><div id="avg03"></div></td>
-		<td><button type="button" class="btn btn-primary" id="resetBtn03" disabled="true">Reset</button></tr>
-	<tr>
-		<td><button type="button" class="btn btn-primary" id="activateBtn04">Programm</button></td>
-		<td><a id="link04" class="btn btn-secondary" target="_blank" href="" style="visibility: hidden" disabled="true">loading...</a></td>
-		<td><button type="button" class="btn btn-primary" id="copyBtn04" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td>
-		<td><div id="poll04"></div></td>
-		<td><div id="votes04"></div></td>
-		<td><div id="count04"></div></td>
-		<td><div id="avg04"></div></td>
-		<td><button type="button" class="btn btn-primary" id="resetBtn04" disabled="true">Reset</button></tr>
-<tbody>
-</table>
-</div>
-
-<div class="comments-wrapper input-group col-12">
-  <div class="input-group-prepend">
-    <span class="input-group-text">Comments</span>
-  </div>
-  <textarea id="comments" class="form-control col-md-9" placeholder="notes, annotations, wishes, goals and other pretty things"></textarea>
-  
-  <button id="save-entry" type="button" class="btn btn-primary col-md-1" disabled="true">Save</button>
-  <button id="reset-all" type="button" class="btn btn-primary col-md-1">Reset all</button>
-</div>
-
-<br/>
-
-<div id="reflexion-table-wrapper">
-	<table id="reflexion-table" class="table table-striped table-hover table-bordered" style="width:100%">
+<div id="page-container">
+	<div id="content-wrap">
+		<div class="table-wrapper">
+		<table class="table table-hover">
 		<colgroup>
+		   <col span="1" style="width: 13%;">
+		   <col span="1" style="width: 5%;">
 		   <col span="1" style="width: 10%;">
+		   <col span="1" style="width: 8%;">
 		   <col span="1" style="width: 10%;">
+		   <col span="1" style="width: 5%;">
 		   <col span="1" style="width: 10%;">
-		   <col span="1" style="width: 10%;">
-		   <col span="1" style="width: 10%;">
-		   <col span="1" style="width: 10%;">
-		   <col span="1" style="width: 40%;">
+		   <col span="1" style="width: 5%;">
 		</colgroup>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Datum</th>
-                <th>Ziel erreicht</th>
-                <th>Lautstärke & Konzentration</th>
-                <th>Stimmug</th>
-                <th>Programm</th>
-                <th>Durchschnitt</th>
-                <th>Kommentare</th>
-            </tr>
-        </thead>
-	</table>
-</div>
-
-<div id="footer-placeholder" class="py-2"></div>
-
-<footer class="footer"> 
-	<div class="text-center py-2">
-		<div>
-			Verbesserungen, Anregungen, Bugs und Wünsche direkt an mich via <a href="https://discordapp.com/users/137229435030994944" target="_blank">Discord</a>
-		<div>
-		<div>
-			<span id="version">Reflexion</span> &copy; 2021 Copyright: <a href="mailto:f.brandlmayer@gmail.com">Fabian Brandlmayer</a>
+		<thead class="thead-dark">
+			<tr>
+				<th>Activate poll</th>
+				<th>Link</th>
+				<th>Copy link to clipboard</th>
+				<th>Poll id</th>
+				<th>Votes</th>
+				<th>Count</th>
+				<th>Average (2 decimals)</th>
+				<th>Reset</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><button type="button" class="btn btn-primary" id="activateBtn01">Ziel erreicht</button></td>
+				<td><a id="link01" class="btn btn-secondary" target="_blank" href="" style="visibility: hidden" disabled="true">loading...</a></td>
+				<td><button type="button" class="btn btn-primary" id="copyBtn01" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td>
+				<td><div id="poll01"></div></td><td>
+				<div id="votes01"></div></td>
+				<td><div id="count01"></div></td>
+				<td vertical-align="middle"><div id="avg01"></div></td>
+				<td><button type="button" class="btn btn-primary" id="resetBtn01" disabled="true">Reset</button>
+			</tr>
+			<tr>
+				<td><button type="button" class="btn btn-primary" id="activateBtn02">Lautstärke & Konzentration</button></td>
+				<td><a id="link02" class="btn btn-secondary" target="_blank" href="" style="visibility: hidden" disabled="true">loading...</a></td>
+				<td><button type="button" class="btn btn-primary" id="copyBtn02" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td>
+				<td><div id="poll02"></div></td>
+				<td><div id="votes02"></div></td>
+				<td><div id="count02"></div></td>
+				<td><div id="avg02"></div></td>
+				<td><button type="button" class="btn btn-primary" id="resetBtn02" disabled="true">Reset</button></tr>
+			<tr>
+				<td><button type="button" class="btn btn-primary" id="activateBtn03">Stimmung</button></td>
+				<td><a id="link03" class="btn btn-secondary" target="_blank" href="" style="visibility: hidden" disabled="true">loading...</a></td>
+				<td><button type="button" class="btn btn-primary" id="copyBtn03" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td>
+				<td><div id="poll03"></div></td><td><div id="votes03"></div></td>
+				<td><div id="count03"></div></td>
+				<td><div id="avg03"></div></td>
+				<td><button type="button" class="btn btn-primary" id="resetBtn03" disabled="true">Reset</button></tr>
+			<tr>
+				<td><button type="button" class="btn btn-primary" id="activateBtn04">Programm</button></td>
+				<td><a id="link04" class="btn btn-secondary" target="_blank" href="" style="visibility: hidden" disabled="true">loading...</a></td>
+				<td><button type="button" class="btn btn-primary" id="copyBtn04" disabled="true" data-toggle="popover" data-container="body">Copy to clipboard</button></td>
+				<td><div id="poll04"></div></td>
+				<td><div id="votes04"></div></td>
+				<td><div id="count04"></div></td>
+				<td><div id="avg04"></div></td>
+				<td><button type="button" class="btn btn-primary" id="resetBtn04" disabled="true">Reset</button></tr>
+		<tbody>
+		</table>
 		</div>
-		<div>
-			<a href="favicon/favicon_original.png">Favicon</a> &copy; 2021 Copyright: <a href="https://discordapp.com/users/689499726390886452">Matteo Ingegneri</a>
+
+		<div class="comments-wrapper input-group col-12">
+		  <div class="input-group-prepend">
+			<span class="input-group-text">Comments</span>
+		  </div>
+		  <textarea id="comments" class="form-control col-md-9" placeholder="notes, annotations, wishes, goals and other pretty things"></textarea>
+		  
+		  <button id="save-entry" type="button" class="btn btn-primary col-md-1" disabled="true">Save</button>
+		  <button id="reset-all" type="button" class="btn btn-primary col-md-1">Reset all</button>
+		</div>
+
+		<br/>
+
+		<div id="reflexion-table-wrapper">
+			<table id="reflexion-table" class="table table-striped table-hover table-bordered" style="width:100%">
+				<colgroup>
+				   <col span="1" style="width: 10%;">
+				   <col span="1" style="width: 10%;">
+				   <col span="1" style="width: 10%;">
+				   <col span="1" style="width: 10%;">
+				   <col span="1" style="width: 10%;">
+				   <col span="1" style="width: 10%;">
+				   <col span="1" style="width: 40%;">
+				</colgroup>
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Datum</th>
+						<th>Ziel erreicht</th>
+						<th>Lautstärke & Konzentration</th>
+						<th>Stimmug</th>
+						<th>Programm</th>
+						<th>Durchschnitt</th>
+						<th>Kommentare</th>
+					</tr>
+				</thead>
+			</table>
 		</div>
 	</div>
-</footer>
+
+	<footer id="footer"> 
+		<div class="text-center py-2">
+			<div>
+				Verbesserungen, Anregungen, Bugs und Wünsche direkt an mich via <a href="https://discordapp.com/users/137229435030994944" target="_blank">Discord</a>
+			<div>
+			<div>
+				<span id="version">Reflexion</span> &copy; 2021 Copyright: <a href="mailto:f.brandlmayer@gmail.com">Fabian Brandlmayer</a>
+			</div>
+			<div>
+				<a href="favicon/favicon_original.png">Favicon</a> &copy; 2021 Copyright: <a href="https://discordapp.com/users/689499726390886452">Matteo Ingegneri</a>
+			</div>
+		</div>
+	</footer>
+</div>
 
 <script>
 $(document).ready(function() {
