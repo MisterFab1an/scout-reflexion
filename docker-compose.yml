@@ -9,7 +9,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - "./index.php:/var/www/html/index.php"
+      - './index.php:/var/www/html/index.php'
     depends_on:
       db:
         condition: service_healthy
