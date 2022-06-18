@@ -1,3 +1,5 @@
+USE `scout`;
+
 INSERT INTO `reflexion` VALUES (2,'2021-01-13 00:00:00',1.50,1.36,1.36,1.91,'Programm: 
 Sommerlagerplatzanfragen besprochen, Sozialprojekt brainstorming, Gruppenkurier-Idee anonyme Fragen an 
 RoRakel\r\nAnmerkungen: wir sind super; hat gut funktioniert; Judith wunderts, dass wir so wenige 
