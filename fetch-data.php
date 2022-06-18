@@ -49,7 +49,7 @@ $sql_details = array(
     'user' => 'scout',
     'pass' => 'scout',
     'db'   => 'scout',
-    'host' => 'localhost'
+    'host' => 'db'
 );
  
  

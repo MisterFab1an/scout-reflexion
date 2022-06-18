@@ -170,7 +170,7 @@
 				Verbesserungen, Anregungen, Bugs und Wünsche direkt an mich via <a href="https://discordapp.com/users/137229435030994944" target="_blank">Discord</a>
 			<div>
 			<div>
-				<span id="version">Reflexion</span> &copy; 2021 Copyright: <a href="mailto:f.brandlmayer@gmail.com">Fabian Brandlmayer</a>
+				<span id="version">Reflexion</span> &copy; 2022 Copyright: <a href="mailto:f.brandlmayer@gmail.com">Fabian Brandlmayer</a>
 			</div>
 			<div>
 				<a href="favicon/favicon_original.png">Favicon</a> &copy; 2021 Copyright: <a href="https://discordapp.com/users/689499726390886452">Matteo Ingegneri</a>
@@ -215,15 +215,15 @@ $(document).ready(function() {
 	});
 	
 	// set version in title and footer
-	var version = "Reflexion v3.3.1";
+	var version = "Reflexion v4.0.0";
 	document.title = version;
 	$('#version').text(version);
 });
 
-var apiUrl = "https://cors-proxy.brandlmayer.workers.dev/?https://strawpoll.com/api/poll";
+var apiUrl = "https://api.strawpoll.com/v3/polls";
 
-var preBody = '{"poll":{"answer_count":4,"title":"';
-var postBody = '","description":"","answers":["1","2","3","4","5"],"priv":true,"ma":false,"mip":true,"co":0,"vpn":1,"enter_name":0,"has_deadline":0,"deadline":null,"only_reg":0,"has_image":0,"image":null,"show_results":1}}';
+var preBody = '{"title":"';
+var postBody = '","poll_options":[{"type":"text","value":"1","position":0},{"type":"text","value":"2","position":1},{"type":"text","value":"3","position":2},{"type":"text","value":"4","position":3},{"type":"text","value":"5","position":4}],"poll_config":{"is_private":true,"duplicate_checking":"session"}}';
 
 addActivateClickHandler("01");
 addActivateClickHandler("02");
@@ -256,9 +256,8 @@ function addRemainingClickHandler() {
 				'average': avg,
 				'comments': $('#comments').val()};
 				
-		console.log(data);
-				
         $.post('insert-data.php', data, function (response) {
+			console.debug(response);
 			$('#reflexion-table').DataTable().ajax.reload();
         });
     });
@@ -307,8 +306,8 @@ function addActivateClickHandler(id) {
 		
 		$.post(apiUrl, data)
 		.done(function(returnValue) {
-			localStorage.setItem("poll" + id, returnValue.content_id);
-			setActive(id, returnValue.content_id);
+			localStorage.setItem("poll" + id, returnValue.id);
+			setActive(id, returnValue.id);
 		})
 		.fail(function(returnValue) {
 			toastr.error("Request failed due to: " + returnValue.statusText + " (" + returnValue.status + ")");
@@ -326,7 +325,7 @@ function addActivateClickHandler(id) {
 function setActive(id, pollId) {
 	$("#poll" + id).text(pollId);
 	$("#link" + id).text("Click");
-	var pollUrl = "https://strawpoll.com/" + pollId;
+	var pollUrl = "https://strawpoll.com/polls/" + pollId;
 	$("#link" + id).attr("href", pollUrl);
 	$("#link" + id).attr("disabled", false);
 	$("#votes" + id).text("loading...");
@@ -409,16 +408,16 @@ function resetPoll(id) {
  */
 function updateField(id){
 	if($("#poll" + id).text() && $("#poll" + id).text().length != 0) {
-		$.get(apiUrl + "/" + $("#poll" + id).text())
+		$.get(apiUrl + "/" + $("#poll" + id).text() + "/results")
 		.done(function(returnValue) {
 			var votes = "";
 			var sum = 0;
 			var count = 0;
 			
-			returnValue.content.poll.poll_answers.forEach(function(item, index) {
-				votes += item.answer + ":" + item.votes + ", ";
-				sum += parseInt(item.answer, 10) * parseInt(item.votes, 10);
-				count += parseInt(item.votes, 10);
+			returnValue.poll_options.forEach(function(item, index) {
+				votes += item.value + ":" + item.vote_count + ", ";
+				sum += parseInt(item.value, 10) * parseInt(item.vote_count, 10);
+				count += parseInt(item.vote_count, 10);
 			});
 			var avg = count != 0 ? sum/count : count;
 			votes = votes.slice(0, -2);
