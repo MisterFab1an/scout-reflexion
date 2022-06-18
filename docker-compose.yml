@@ -13,13 +13,13 @@ services:
         condition: service_healthy
 
   db:
-    image: mariadb:10.6.5
+    image: yobasystems/alpine-mariadb:10.6.7-arm32v7
     restart: always
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MARIADB_USER: "scout"
-      MARIADB_PASSWORD: "scout"
-      MARIADB_DATABASE: "scout"
+      MYSQL_USER: "scout"
+      MYSQL_PASSWORD: "scout"
+      MYSQL_DATABASE: "scout"
     volumes:
       - './schema.sql:/docker-entrypoint-initdb.d/1.sql'
       - './insert-data-20220618.sql:/docker-entrypoint-initdb.d/2.sql'
