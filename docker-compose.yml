@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  app-scout-reflexion:
+  scout-reflexion-app:
     build: .
     restart: always
     ports:
@@ -9,10 +9,10 @@ services:
     volumes:
       - '.:/var/www/html'
     depends_on:
-      db:
+      scout-reflexion-db:
         condition: service_healthy
 
-  db-scout-reflexion:
+  scout-reflexion-db:
     image: yobasystems/alpine-mariadb:10.6.7
     restart: always
     environment:

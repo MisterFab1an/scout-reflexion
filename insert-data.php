@@ -1,5 +1,5 @@
 <?php
-$host = "db-scout-reflexion";
+$host = "scout-reflexion-db";
 $username = "scout";
 $password = "scout";
 $dbname = "scout";
